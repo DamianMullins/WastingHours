@@ -1,5 +1,5 @@
-﻿using System.Web.Mvc;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using System.Web.Mvc;
 using WastingHours.Controllers;
 
 namespace WastingHours.Tests
