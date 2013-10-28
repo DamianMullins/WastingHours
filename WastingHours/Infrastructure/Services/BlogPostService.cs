@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using MarkdownSharp;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Script.Serialization;
-using MarkdownSharp;
 using WastingHours.Infrastructure.Abstract;
 using WastingHours.Models;
 
@@ -18,11 +18,13 @@ namespace WastingHours.Infrastructure.Services
             _blogFilePath = "~/App_Data/BlogPosts";
         }
 
-        public List<BlogPost> GetBlogPosts(int numberOfPosts)
+        public List<BlogPost> GetBlogPosts(int numberOfPosts = 10)
         {
             var fullDirectoryPath = HttpContext.Current.Server.MapPath(_blogFilePath);
             List<string> files = Directory.GetFiles(fullDirectoryPath, "*.md").ToList();
             var posts = new List<BlogPost>();
+
+            //TODO: Parse filename for date so we can limit number of posts before building BlogPost objects
 
             foreach (string fileName in files)
             {
@@ -31,11 +33,10 @@ namespace WastingHours.Infrastructure.Services
                 string body = fileContents.Substring(fileContents.IndexOf('}') + 1).Trim();
 
                 BlogPost post = new JavaScriptSerializer().Deserialize<BlogPost>(config);
-                // Add formatted body
-                post.Body = new Markdown(new MarkdownOptions{AutoNewLines = true}).Transform(body).Trim();
+                post.Body = new Markdown(new MarkdownOptions { AutoNewLines = true }).Transform(body).Trim(); // Add formatted body
                 posts.Add(post);
             }
-            return posts;
+            return posts.OrderByDescending(p => p.Date).Take(numberOfPosts).ToList();
         }
     }
 }

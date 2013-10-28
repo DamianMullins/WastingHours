@@ -16,7 +16,7 @@ namespace WastingHours.Controllers
 
         public ActionResult Index()
         {
-            List<BlogPost> posts = _blogPostService.GetBlogPosts(1);
+            List<BlogPost> posts = _blogPostService.GetBlogPosts(numberOfPosts: 3);
 
             return View(posts);
         }
