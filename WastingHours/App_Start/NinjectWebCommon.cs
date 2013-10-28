@@ -3,8 +3,8 @@ using Ninject;
 using Ninject.Web.Common;
 using System;
 using System.Web;
-using WastingHours.Infrastructure;
 using WastingHours.Infrastructure.Abstract;
+using WastingHours.Infrastructure.Services;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(WastingHours.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(WastingHours.App_Start.NinjectWebCommon), "Stop")]
