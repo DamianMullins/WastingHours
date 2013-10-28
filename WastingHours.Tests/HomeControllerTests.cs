@@ -1,6 +1,8 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
 using System.Web.Mvc;
 using WastingHours.Controllers;
+using WastingHours.Infrastructure.Abstract;
 
 namespace WastingHours.Tests
 {
@@ -11,7 +13,8 @@ namespace WastingHours.Tests
         public void Index_HttpGet_ExpectedResult()
         {
             // Arrange
-            var controller = new HomeController();
+            var blogPostService = new Mock<IBlogPostService>();
+            var controller = new HomeController(blogPostService.Object);
 
             // Act
             ActionResult result = controller.Index();
