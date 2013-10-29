@@ -27,7 +27,7 @@ namespace WastingHours.Infrastructure.Services
 
         public List<BlogPost> GetBlogPosts(bool isPreview = true)
         {
-            return ProcessBlogPosts(isPreview);
+            return ProcessBlogPosts(isPreview).OrderByDescending(p => p.Date).ToList();
         }
 
         public List<BlogPost> GetBlogPosts(int numberOfPosts, bool isPreview = true)
@@ -51,12 +51,13 @@ namespace WastingHours.Infrastructure.Services
 
             if (!isPreview)
             {
-                post.Body = new Markdown(new MarkdownOptions { AutoNewLines = true }).Transform(body).Trim(); // Add formatted body
+                var options = new MarkdownOptions { AutoNewLines = true };
+                post.Body = new Markdown(options).Transform(body).Trim(); // Add formatted body
             }
             return post;
         }
 
-        private List<BlogPost> ProcessBlogPosts(bool isPreview)
+        private IEnumerable<BlogPost> ProcessBlogPosts(bool isPreview)
         {
             var files = ScanForFiles();
             return files.Select(filename => BuildBlogPost(filename, isPreview)).ToList();
