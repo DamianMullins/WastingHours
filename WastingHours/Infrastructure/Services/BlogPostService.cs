@@ -12,10 +12,12 @@ namespace WastingHours.Infrastructure.Services
     public class BlogPostService : IBlogPostService
     {
         private readonly string _blogFilePath;
+        private readonly HttpContextBase _httpContext;
 
-        public BlogPostService()
+        public BlogPostService(HttpContextBase httpContext)
         {
             _blogFilePath = "~/App_Data/BlogPosts";
+            _httpContext = httpContext;
         }
 
         public BlogPost GetBlogPost(string title)
@@ -37,7 +39,7 @@ namespace WastingHours.Infrastructure.Services
 
         private IEnumerable<string> ScanForFiles()
         {
-            var fullDirectoryPath = HttpContext.Current.Server.MapPath(_blogFilePath);
+            var fullDirectoryPath = _httpContext.Server.MapPath(_blogFilePath);
             var files = Directory.GetFiles(fullDirectoryPath, "*.md");
             return files;
         }
