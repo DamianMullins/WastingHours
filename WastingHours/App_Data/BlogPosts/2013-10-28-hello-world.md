@@ -1,13 +1,12 @@
 {
 	Date: "2013-10-28 10:35",
 	Title: "Hello World",
+	Url: "hello-world",
 	Tags: "general, theme, scriptogr.am", 
 	Description: "My first blog post"
 }
 
-# Hello World!
-
-## Second Header
+### Third Header
 
 *Formatted*
 

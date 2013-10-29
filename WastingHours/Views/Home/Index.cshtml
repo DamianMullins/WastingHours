@@ -10,7 +10,7 @@
             <h2>@post.Title</h2>
             <p><time title="@post.Date.ToString()">@post.Date.ToString("dddd d MMMM yyyy")</time></p>
             <p>@post.Description</p>
-            <p><a class="btn btn-default" href="#">Read more &raquo;</a></p>
+            <p><a class="btn btn-default" href="@string.Format("/{0}", post.Url)">Read more &raquo;</a></p>
         </div>
     }
 </div>

@@ -16,9 +16,15 @@ namespace WastingHours.Controllers
 
         public ActionResult Index()
         {
-            List<BlogPost> posts = _blogPostService.GetBlogPosts(numberOfPosts: 3);
+            List<BlogPost> posts = _blogPostService.GetBlogPosts(numberOfPosts: 3, isPreview: true);
 
             return View(posts);
+        }
+
+        public ActionResult Post(string title)
+        {
+            BlogPost post = _blogPostService.GetBlogPost(title);
+            return View(post);
         }
 
         public ActionResult About()

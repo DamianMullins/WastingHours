@@ -1,4 +1,5 @@
-﻿using MarkdownSharp;
+﻿using System;
+using MarkdownSharp;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,25 +19,48 @@ namespace WastingHours.Infrastructure.Services
             _blogFilePath = "~/App_Data/BlogPosts";
         }
 
-        public List<BlogPost> GetBlogPosts(int numberOfPosts = 10)
+        public BlogPost GetBlogPost(string title)
+        {
+            string filename = ScanForFiles().FirstOrDefault(f => f.Contains(title));
+            BlogPost post = BuildBlogPost(filename, false);
+            return post;
+        }
+
+        public List<BlogPost> GetBlogPosts(bool isPreview = true)
+        {
+            return ProcessBlogPosts(isPreview);
+        }
+
+        public List<BlogPost> GetBlogPosts(int numberOfPosts, bool isPreview = true)
+        {
+            return ProcessBlogPosts(isPreview).OrderByDescending(p => p.Date).Take(numberOfPosts).ToList();
+        }
+
+        private IEnumerable<string> ScanForFiles()
         {
             var fullDirectoryPath = HttpContext.Current.Server.MapPath(_blogFilePath);
-            List<string> files = Directory.GetFiles(fullDirectoryPath, "*.md").ToList();
-            var posts = new List<BlogPost>();
+            var files = Directory.GetFiles(fullDirectoryPath, "*.md");
+            return files;
+        }
 
-            //TODO: Parse filename for date so we can limit number of posts before building BlogPost objects
+        private BlogPost BuildBlogPost(string filename, bool isPreview)
+        {
+            var fileContents = File.ReadAllText(filename);
+            string config = fileContents.Substring(0, fileContents.IndexOf('}') + 1);
+            string body = fileContents.Substring(fileContents.IndexOf('}') + 1).Trim();
+            BlogPost post = new JavaScriptSerializer().Deserialize<BlogPost>(config);
 
-            foreach (string fileName in files)
+            if (!isPreview)
             {
-                var fileContents = File.ReadAllText(fileName);
-                string config = fileContents.Substring(0, fileContents.IndexOf('}') + 1);
-                string body = fileContents.Substring(fileContents.IndexOf('}') + 1).Trim();
-
-                BlogPost post = new JavaScriptSerializer().Deserialize<BlogPost>(config);
                 post.Body = new Markdown(new MarkdownOptions { AutoNewLines = true }).Transform(body).Trim(); // Add formatted body
-                posts.Add(post);
             }
-            return posts.OrderByDescending(p => p.Date).Take(numberOfPosts).ToList();
+            return post;
+        }
+
+        private List<BlogPost> ProcessBlogPosts(bool isPreview)
+        {
+            var files = ScanForFiles();
+            return files.Select(filename => BuildBlogPost(filename, isPreview)).ToList();
         }
     }
 }
