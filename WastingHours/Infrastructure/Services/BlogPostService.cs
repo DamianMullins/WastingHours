@@ -1,5 +1,4 @@
-﻿using System;
-using MarkdownSharp;
+﻿using MarkdownSharp;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
